@@ -69,3 +69,4 @@ vector<MEMBER> ReadFileMember(vector<BOOK>list_book_available);
 void InputMember(LIBRARY& lib);
 void DisplayChoise(int choise);
 void Menu(LIBRARY& lib);
+void BorrowingBook(LIBRARY& lib, string IDmember, string IDbook);

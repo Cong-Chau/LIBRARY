@@ -1,6 +1,6 @@
 ten;tac gia;id;trang thai
 sach a;nguyen van a;a00;1
-sach b;nguyen van b;a01;0
-sach c;nguyen van c;a02;1
-sach d;nguyen van d;a03;0
+sach b;nguyen van b;a01;1
+sach c;nguyen van c;a02;0
+sach d;nguyen van d;a03;1
 sach e;nguyen van e;a04;0

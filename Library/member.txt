@@ -2,4 +2,4 @@ ten;id;ds sach muon(,,)
 tran van a;b00;khong,
 tran van b;b01;sach a,sach b,
 tran van c;b02;khong,
-tran van d;b03;sach a,
+tran van d;b03;sach d,

@@ -28,9 +28,6 @@ void BOOK::SetStatus(int _status) {
 	status = _status;
 }
 
-vector<BOOK> LIBRARY::ListBook() {
-	return book;
-}
 
 // lay thong tin thanh vien
 string MEMBER::TakeName() {
@@ -52,14 +49,12 @@ void MEMBER::SetID(string ID) {
 void MEMBER::SetBorrowing(vector<BOOK>book) {
 	borrowing = book;
 }
-
-// muon sach
+// muon 
 void MEMBER::Borrow(BOOK borrow_book) {
 	borrow_book.SetStatus(1);
 	borrowing.push_back(borrow_book);
 }
-
-// tra sach
+// tra 
 void MEMBER::Return(BOOK return_book) {
 	return_book.SetStatus(0);
 	for (int i = 0; i < borrowing.size(); i++) {
@@ -76,7 +71,6 @@ void MEMBER::Return(BOOK return_book) {
 void LIBRARY::AddMember(MEMBER addition_member) {
 	member.push_back(addition_member);
 }
-
 // them sach
 void LIBRARY::AddBook(BOOK addition_book) {
 	book.push_back(addition_book);
@@ -91,7 +85,9 @@ void LIBRARY::SetBook(vector<BOOK>new_book) {
 void LIBRARY::SetMember(vector<MEMBER>new_member) {
 	member = new_member;
 }
-
+vector<BOOK> LIBRARY::ListBook() {
+	return book;
+}
 
 
 // dem so luong trong .txt
@@ -160,9 +156,9 @@ vector<MEMBER> ReadFileMember(vector<BOOK>list_book_available) {
 				book.SetName("khong");
 				book.SetAuthor("0");
 				book.SetID("0");
-			}
-			borrwing.push_back(book);
-			break;
+				borrwing.push_back(book);
+				break;
+			}	
 			for (int j = 0; j < list_book_available.size(); j++) {
 				if (list_book_available[i].TakeName() == each_book) {
 					book.SetName(list_book_available[i].TakeName());
@@ -172,6 +168,7 @@ vector<MEMBER> ReadFileMember(vector<BOOK>list_book_available) {
 			}
 			borrwing.push_back(book);
 		}
+
 		MEMBER temp_member;
 		temp_member.SetName(temp_name);
 		temp_member.SetID(temp_ID);
@@ -228,15 +225,8 @@ void InputBook(LIBRARY& lib) {
 	lib.AddBook(book);
 }
 
-void BorrowingBook(LIBRARY& lib) {
-	string IDmember;
-	cout << "Ma thanh vien :";
-	getline(cin, IDmember);
-
-	string IDbook;
-	cout << "Ma sach muon: ";
-	getline(cin, IDbook);
-
+// Muon sach
+void BorrowingBook(LIBRARY& lib,string IDmember,string IDbook) {
 	// Tim thong tin cua sach can muon va set trang thai sach dang duoc muon
 	BOOK book_borrow;
 	vector<BOOK>list_book = lib.ListBook();
@@ -264,12 +254,38 @@ void BorrowingBook(LIBRARY& lib) {
 			list_member[i].SetBorrowing(list_borrowing);
 		}
 	}
+	// cap nhat lai danh sach thanh vien
 	lib.SetMember(list_member);
 
 }
 
+// Tra sach
+void ReturnBook(LIBRARY& lib, string IDmember, string IDbook) {
+	// Tim sach va bat ve trang thai dang ranh
+	BOOK book_borrow;
+	vector<BOOK>list_book = lib.ListBook();
+	for (int i = 0; i < list_book.size(); i++) {
+		if (list_book[i].TakeID() == IDbook) {
+			book_borrow.SetName(list_book[i].TakeName());
+			book_borrow.SetAuthor(list_book[i].TakeAuthor());
+			book_borrow.SetID(list_book[i].TakeID());
+			list_book[i].SetStatus(0);
+		}
+	}
+	// cap nhat lai danh sach sach
+	lib.SetBook(list_book);
 
+	// Tim va xoa sach trong danh sach sach muon cua thanh vien
+	vector<MEMBER>member = lib.ListMember();
+	for (int i = 0; i < member.size(); i++) {
+		if (member[i].TakeID() == IDmember) {
 
+			member[i].Return(book_borrow);
+		}
+
+	}
+	lib.SetMember(member);
+}
 
 
 void DisplayChoise(int choise) {
@@ -347,11 +363,11 @@ void Menu(LIBRARY& lib) {
 						cout << "\n   2. Danh sach sach con\n";
 						vector<BOOK> book = lib.ListBook();
 						int amount = book.size(); 
-						cout << "Ten\tTac gia\tMa sach\n";
+						cout << "Ten\t|\tTac gia\t\t|\tMa sach\n";
 						for (int i = 0; i < amount; i++) {
 							if (book[i].TakeStatus() == 0) {
-								cout << book[i].TakeName() << "\t";
-								cout << book[i].TakeAuthor() << "\t";
+								cout << book[i].TakeName() << "\t|\t";
+								cout << book[i].TakeAuthor() << "\t|\t";
 								cout << book[i].TakeID() << endl;
 							}
 						}
@@ -378,10 +394,10 @@ void Menu(LIBRARY& lib) {
 					case 4: {
 						cout << "\n   4. Danh sach thanh vien\n";
 						vector<MEMBER> member = lib.ListMember();
-						cout << "Ten\tMa thanh vien\n";
+						cout << "Ten\t\t|\tMa thanh vien\n";
 						for (int i = 0; i < member.size(); i++) {
-							cout << member[i].TakeName() << "\t";
-							cout << member[i].TakeID() << "\n";
+							cout << member[i].TakeName() << "\t|\t";
+							cout << member[i].TakeID() << endl;
 						}
 						cout << "  An phim bat ki de quay ve Menu...\n";
 						_getch();
@@ -389,15 +405,29 @@ void Menu(LIBRARY& lib) {
 					}
 					case 5: {
 						cout << "\n   5. Muon sach\n";
-						BorrowingBook(lib);
+						string IDmember;
+						cout << "Ma thanh vien :";
+						getline(cin, IDmember);
+
+						string IDbook;
+						cout << "Ma sach muon: ";
+						getline(cin, IDbook);
+
+						BorrowingBook(lib, IDmember, IDbook);
 						cout << "  An phim bat ki de quay ve Menu...\n";
 						_getch();
 						break;
 					}
 					case 6: {
 						cout << "\n   6. Tra sach\n";
+						string IDmember;
+						cout << "Ma thanh vien :";
+						getline(cin, IDmember);
 
-						
+						string IDbook;
+						cout << "Ma sach tra: ";
+						getline(cin, IDbook);
+						ReturnBook(lib, IDmember, IDbook);
 
 						cout << "  An phim bat ki de quay ve Menu...\n";
 						_getch();
