@@ -131,7 +131,7 @@ vector<BOOK> ReadFileBook() {
 }
 
 // doc thong tin thanh vien trong member.txt
-vector<MEMBER> ReadFileMember(vector<BOOK>list_book_available) {
+vector<MEMBER> ReadFileMember(vector<BOOK>borrow_book) {
 	vector<MEMBER> member;
 	ifstream file("member.txt", ios::in);
 	int amount = CountFile("member.txt");
@@ -159,11 +159,11 @@ vector<MEMBER> ReadFileMember(vector<BOOK>list_book_available) {
 				borrwing.push_back(book);
 				break;
 			}	
-			for (int j = 0; j < list_book_available.size(); j++) {
-				if (list_book_available[i].TakeName() == each_book) {
-					book.SetName(list_book_available[i].TakeName());
-					book.SetAuthor(list_book_available[i].TakeAuthor());
-					book.SetID(list_book_available[i].TakeID());
+			for (int j = 0; j < borrow_book.size(); j++) {
+				if (borrow_book[i].TakeName() == each_book) {
+					book.SetName(borrow_book[i].TakeName());
+					book.SetAuthor(borrow_book[i].TakeAuthor());
+					book.SetID(borrow_book[i].TakeID());
 				}
 			}
 			borrwing.push_back(book);
